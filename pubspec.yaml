@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   vector_math: ^2.1.0
+  preload_page_view: ^0.1.6
 
 #repository: https://github.com/akashom53/awesome_bottom_navigation_package
 

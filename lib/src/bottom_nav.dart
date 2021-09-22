@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:preload_page_view/preload_page_view.dart';
+
 import 'clipper.dart';
 import 'consts.dart';
-import 'shadow_painter.dart';
 import 'custom_extension.dart';
+import 'shadow_painter.dart';
 
 /// A Bottom Navigation Bar that comes with beautiful animation stylish curves.
 ///
@@ -64,6 +66,8 @@ class AwesomeBottomNav extends StatefulWidget {
   final Color navBgColor;
   final Color navFgColor;
   final ValueSetter<int> onTapped;
+  final PreloadPageController controller;
+  final int index;
 
   const AwesomeBottomNav({
     Key? key,
@@ -75,6 +79,8 @@ class AwesomeBottomNav extends StatefulWidget {
     required this.bodyBgColor,
     required this.navBgColor,
     required this.navFgColor,
+    required this.controller,
+    required this.index,
     this.boxDecoration,
     // required this.iconText,
   }) : super(key: key);
@@ -115,6 +121,13 @@ class _AwesomeBottomNavState extends State<AwesomeBottomNav>
       parent: _animationController,
       curve: Interval(0.75, 1.0, curve: Curves.easeInOutSine),
     ));
+
+    widget.controller.addListener(() {
+      setState(() {
+        _selectedIndex = widget.controller.page!.toInt();
+      });
+      _tapped(_selectedIndex);
+    });
   }
 
   void _tapped(int index) {
@@ -146,7 +159,8 @@ class _AwesomeBottomNavState extends State<AwesomeBottomNav>
   }
 
   double _getMainCircleLeft(Size size) {
-    final totalPadding = size.width - (kNavSize * widget.highlightedIcons.length);
+    final totalPadding =
+        size.width - (kNavSize * widget.highlightedIcons.length);
     final singlePadding = totalPadding / (widget.highlightedIcons.length + 1);
     return ((_animationController.isAnimating
                 ? _posXAnimation.value
@@ -210,19 +224,22 @@ class _AwesomeBottomNavState extends State<AwesomeBottomNav>
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: widget.menuItems.mapIndexed((e, i) => Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      _tapped(widget.menuItems.indexOf(widget.menuItems[i]));
-                    },
-                    child: Container(
-                      height: 64,
-                      child: Center(
-                        child: widget.menuItems[i],
-                      ),
-                    ),
-                  ),
-                )).toList(),
+                children: widget.menuItems
+                    .mapIndexed((e, i) => Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              _tapped(widget.menuItems
+                                  .indexOf(widget.menuItems[i]));
+                            },
+                            child: Container(
+                              height: 64,
+                              child: Center(
+                                child: widget.menuItems[i],
+                              ),
+                            ),
+                          ),
+                        ))
+                    .toList(),
               ),
             ),
           ),
