@@ -124,7 +124,7 @@ class _AwesomeBottomNavState extends State<AwesomeBottomNav>
 
     widget.controller.addListener(() {
       setState(() {
-        _selectedIndex = widget.controller.page!.toInt();
+        _selectedIndex = widget.controller.page!.ceil().toInt();
       });
       _tapped(_selectedIndex);
     });
